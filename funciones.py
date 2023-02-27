@@ -94,3 +94,68 @@ def opcion3(db):
     except:
         print("Error en la consulta")
 
+def opcion4(db):
+    cursor = db.cursor()
+    matricula = input("Introduce la matricula del remolque (por ejemplo: 0000AAA): ")
+    modelo = input("Introduce el modelo del remolque (debe ser en mayúsucla): ")
+    peso = input("Introduce el peso del remolque (deber ser mayor que 10000): ")
+    codigo_parque = input("Introduce el código del parque: ")
+    tipo_remolque = input("¿Qué tipo de remolque es? (CISTERNA, FRIGORIFICO o NORMAL?): ")
+
+    if tipo_remolque == "CISTERNA":
+        capacidad = input("Introduce la capacidad de la cisterna (debe ser entre 2000 y 20000): ")
+        tipo_mercancia = input("Introduce el tipo de mercancía (PELIGROSO o NO PELIGROSO): ")
+        sql = "INSERT INTO Remolque_Cisterna (matricula_remolque, capacidad, tipo_mercancia) VALUES ('%s', '%s', UPPER('%s'))" % (matricula, capacidad, tipo_mercancia)
+    elif tipo_remolque == "FRIGORIFICO":
+        capacidad = input("Introduce la capacidad del frigorífico (entre 2000 y 20000): ")
+        rango_temperatura = input("Introduce el rango de temperatura (debe ser entre -30 y 10): ")
+        sql = "INSERT INTO Remolque_Frigorifico (matricula_remolque, capacidad, rango_temperatura) VALUES ('%s', '%s', '%s')" % (matricula, capacidad, rango_temperatura)
+    else:
+        capacidad = input("Introduce la capacidad del remolque (debe ser entre 2000 y 20000): ")
+        sql = "INSERT INTO Remolque_Normal (matricula_remolque, capacidad) VALUES ('%s', '%s')" % (matricula, capacidad)
+
+    sql2 = "INSERT INTO Remolque (matricula, modelo, peso, codigo_parque) VALUES ('%s', UPPER('%s'), '%s', UPPER('%s'))" % (matricula, modelo, peso, codigo_parque)
+
+    try:
+        cursor.execute(sql2)
+        cursor.execute(sql)
+        db.commit()
+        print("Remolque insertado correctamente.")
+    except:
+        db.rollback()
+        print("Error al insertar el remolque.")
+
+
+def opcion5(db):
+    matricula = input("Introduce la matricula del remolque que deseas eliminar: ")
+    cursor = db.cursor()
+    try:
+        sql = "DELETE FROM Remolque_Cisterna WHERE matricula_remolque = '%s'" % matricula
+        cursor.execute(sql)
+        if cursor.rowcount > 0:
+            print("Se ha eliminado la información del remolque en la tabla Remolque Cisterna.")
+
+        sql = "DELETE FROM Remolque_Frigorifico WHERE matricula_remolque = '%s'" % matricula
+        cursor.execute(sql)
+        if cursor.rowcount > 0:
+            print("Se ha eliminado la información del remolque en la tabla Remolque Frigorifico.")
+
+        sql = "DELETE FROM Remolque_Normal WHERE matricula_remolque = '%s'" % matricula
+        cursor.execute(sql)
+        if cursor.rowcount > 0:
+            print("Se ha eliminado la información del remolque en la tabla Remolque Normal.")
+
+        sql = "DELETE FROM Remolque WHERE matricula = '%s'" % matricula
+        cursor.execute(sql)
+        if cursor.rowcount == 0:
+            print("No existe ningún remolque con la matrícula introducida.")
+        else:
+            print("Se ha eliminado el remolque de la tabla Remolque.")
+
+        db.commit()
+        print("Se han eliminado todos los datos relacionados con la matrícula introducida.")
+
+    except:
+        db.rollback()
+        print("Ha ocurrido un error al intentar eliminar los datos del remolque.")
+
