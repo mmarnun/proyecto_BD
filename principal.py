@@ -7,6 +7,8 @@ while opcion!=0:
         opcion1(db)
     elif opcion==2:
         opcion2(db)
+    elif opcion==3:
+        opcion3(db)
     else:
         print("Opción incorrecta.")
     opcion=Menu()

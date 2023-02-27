@@ -24,6 +24,10 @@ def Menu():
     Introduce la opción deseada
     1. Listar información de los remolques.
     2. Introduce dos valores de peso y muestra información de los remolques.
+    3. Introduce el modelo de un remolque y muestra información relacionada.
+    4. Insertar nuevo remolque.
+    5. Eliminar remolque.
+    6. Actualizar capacidad de remolque.
     '''
     print(menu)
     while True:
@@ -50,7 +54,8 @@ def opcion2(db):
     if min_peso > max_peso:
         print("Error: el peso mínimo debe ser menor o igual que el máximo.")
         return
-    sql="SELECT * FROM Remolque WHERE peso BETWEEN {} AND {}".format(min_peso, max_peso)
+    sql="SELECT * FROM Remolque WHERE peso BETWEEN %d AND %d" % (min_peso, max_peso)
+
     cursor = db.cursor()
     try:
         cursor.execute(sql)
@@ -61,4 +66,31 @@ def opcion2(db):
         print("Error en la consulta")
 
 def opcion3(db):
-    modelo = input("Introduce el modelo del remolque: ")
+    modelo = input("Introduce el modelo de remolque: ")
+    sql = "SELECT r.matricula, r.modelo, r.peso, r.codigo_parque, c.tipo_mercancia, f.rango_temperatura FROM Remolque r LEFT JOIN Remolque_Cisterna c ON r.matricula = c.matricula_remolque LEFT JOIN Remolque_Frigorifico f ON r.matricula = f.matricula_remolque WHERE UPPER(r.modelo) = UPPER('%s')" % modelo
+    cursor = db.cursor()
+    try:
+        cursor.execute(sql)
+        registros = cursor.fetchall()
+        if registros:
+            for registro in registros:
+                matricula = registro[0]
+                modelo = registro[1]
+                peso = registro[2]
+                codigo_parque = registro[3]
+                tipo_mercancia = registro[4]
+                rango_temperatura = registro[5]
+
+                if tipo_mercancia:
+                    print("Matricula:", matricula, "Modelo:", modelo, "Peso:", peso, "Codigo del parque:", codigo_parque, "Tipo de mercancía:", tipo_mercancia)
+                elif rango_temperatura:
+                    print("Matricula:", matricula, "Modelo:", modelo, "Peso:", peso, "Codigo del parque:", codigo_parque, "Rango de temperatura:", rango_temperatura)
+                else:
+                    print("Matricula:", matricula, "Modelo:", modelo, "Peso:", peso, "Codigo del parque:", codigo_parque)
+
+        else:
+            print("No se existen remolques con el modelo introducido.")
+
+    except:
+        print("Error en la consulta")
+
