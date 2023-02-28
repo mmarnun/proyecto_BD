@@ -27,7 +27,8 @@ def Menu():
     3. Introduce el modelo de un remolque y muestra información relacionada.
     4. Insertar nuevo remolque.
     5. Eliminar remolque.
-    6. Actualizar capacidad de remolque.
+    6. Actualizar peso de remolque.
+    7. Salir
     '''
     print(menu)
     while True:
@@ -46,11 +47,11 @@ def opcion1(db):
         for registro in registros:
             print("Modelo:", registro[0], "Matricula:", registro[1], "Peso máximo:", registro[2], "Numero de remolques:", registro[3])
     except:
-        print("Error en la consulta")
+        print("Error en la consulta.")
 
 def opcion2(db):
-    min_peso = int(input("Introduce un peso mínima: "))
-    max_peso = int(input("Introduce un peso máxima: "))
+    min_peso = int(input("Introduce un peso mínimo: "))
+    max_peso = int(input("Introduce un peso máximo: "))
     if min_peso > max_peso:
         print("Error: el peso mínimo debe ser menor o igual que el máximo.")
         return
@@ -63,7 +64,7 @@ def opcion2(db):
         for registro in registros:
             print("Matricula:", registro[0], "Modelo:", registro[1], "Peso:", registro[2], "Codigo del parque:", registro[3])
     except:
-        print("Error en la consulta")
+        print("Error en la consulta.")
 
 def opcion3(db):
     modelo = input("Introduce el modelo de remolque: ")
@@ -159,3 +160,18 @@ def opcion5(db):
         db.rollback()
         print("Ha ocurrido un error al intentar eliminar los datos del remolque.")
 
+def opcion6(db):
+    matricula = input("Introduce la matrícula del remolque que deseas actualizar: ")
+    peso = int(input("Introduce la nueva capacidad del remolque: "))
+    cursor = db.cursor()
+    try:
+        sql = "UPDATE Remolque SET peso = %d WHERE matricula = '%s'" % (peso, matricula)
+        cursor.execute(sql)
+        if cursor.rowcount == 0:
+            print("No existe ningún remolque con la matrícula introducida.")
+        else:
+            print("Se ha actualizado la capacidad del remolque en la tabla Remolque.")
+        db.commit()
+    except:
+        db.rollback()
+        print("Ha ocurrido un error al intentar actualizar la capacidad del remolque.")
