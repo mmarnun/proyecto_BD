@@ -1,19 +1,19 @@
 import sys
-import mysql.connector
+import psycopg2
 
 def Conectar_BD(host, user, password, database):
     try:
-        db = mysql.connector.connect(
+        db = psycopg2.connect(
             host=host,
             user=user,
             password=password,
             database=database
         )
-    except mysql.connector.Error as e:
+    except psycopg2.Error as e:
         print("No se pudo conectar a la base de datos:", e)
         sys.exit(1)
 
-    print("Conexión correcta a MariaDB.")
+    print("Conexión correcta a PostgreSQL.")
     return db
 
 def Desconectar_BD(db):
