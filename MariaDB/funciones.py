@@ -108,7 +108,7 @@ def opcion4(db):
         tipo_mercancia = input("Introduce el tipo de mercancía (PELIGROSO o NO PELIGROSO): ")
         sql = "INSERT INTO Remolque_Cisterna (matricula_remolque, capacidad, tipo_mercancia) VALUES ('%s', '%s', UPPER('%s'))" % (matricula, capacidad, tipo_mercancia)
     elif tipo_remolque == "FRIGORIFICO":
-        capacidad = input("Introduce la capacidad del frigorífico (entre 2000 y 20000): ")
+        capacidad = input("Introduce la capacidad del frigorífico (deber ser entre 2000 y 20000): ")
         rango_temperatura = input("Introduce el rango de temperatura (debe ser entre -30 y 10): ")
         sql = "INSERT INTO Remolque_Frigorifico (matricula_remolque, capacidad, rango_temperatura) VALUES ('%s', '%s', '%s')" % (matricula, capacidad, rango_temperatura)
     else:
@@ -162,7 +162,7 @@ def opcion5(db):
 
 def opcion6(db):
     matricula = input("Introduce la matrícula del remolque que deseas actualizar: ")
-    peso = int(input("Introduce la nueva capacidad del remolque: "))
+    peso = int(input("Introduce el nuevo peso del remolque: "))
     cursor = db.cursor()
     try:
         sql = "UPDATE Remolque SET peso = %d WHERE matricula = '%s'" % (peso, matricula)
@@ -170,8 +170,8 @@ def opcion6(db):
         if cursor.rowcount == 0:
             print("No existe ningún remolque con la matrícula introducida.")
         else:
-            print("Se ha actualizado la capacidad del remolque en la tabla Remolque.")
+            print("Se ha actualizado el peso del remolque en la tabla Remolque.")
         db.commit()
     except:
         db.rollback()
-        print("Ha ocurrido un error al intentar actualizar la capacidad del remolque.")
+        print("Error al intentar actualizar el peso del remolque.")
